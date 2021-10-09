@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80de67b347f9ffb4ea3afa6a4889ecda, type: 3}
+  m_Name: Bersker with A Sword
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4144486090442018897, guid: 17de00f149322a04fa89d16f102b448f, type: 3}
+  maxHealth: 150
+  maxEnergy: 100
+  critChance: 5.6
+  power: 54.5
+  name: Bersker with A Sword
+  classType: 1
+  wpnType: 0
