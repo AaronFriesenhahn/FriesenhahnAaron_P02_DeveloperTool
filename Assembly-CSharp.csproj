@@ -62,6 +62,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Custom_Class_LevelUp_Tool\Resources\Scripts\CustomClassData.cs" />
+    <Compile Include="Assets\Custom_Class_LevelUp_Tool\Scripts\CustomClass.cs" />
     <Compile Include="Assets\RNG.cs" />
     <Compile Include="Assets\RPG_Enemy_Classes_Tool\resources\characterData\scripts\CharacterData.cs" />
     <Compile Include="Assets\RPG_Enemy_Classes_Tool\resources\characterData\scripts\MageData.cs" />
