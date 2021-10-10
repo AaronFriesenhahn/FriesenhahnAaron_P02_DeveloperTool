@@ -192,28 +192,28 @@ public class CustomClassLevelUpWindow : EditorWindow
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("HP% ", GUILayout.Width(40));
         GUILayout.FlexibleSpace();
-        customclassData.chanceToIncreaseHealth = EditorGUILayout.IntField(customclassData.chanceToIncreaseHealth);
+        customclassData.chanceToIncreaseHealth = EditorGUILayout.IntSlider(customclassData.chanceToIncreaseHealth, 0, 100);
         GUILayout.Space(50);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("ATK%", GUILayout.Width(40));
         GUILayout.FlexibleSpace();
-        customclassData.chanceToIncreaseAttack = EditorGUILayout.IntField(customclassData.chanceToIncreaseAttack);
+        customclassData.chanceToIncreaseAttack = EditorGUILayout.IntSlider(customclassData.chanceToIncreaseAttack, 0, 100);
         GUILayout.Space(50);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("DEF%", GUILayout.Width(40));
         GUILayout.FlexibleSpace();
-        customclassData.chanceToIncreseDefense = EditorGUILayout.IntField(customclassData.chanceToIncreseDefense);
+        customclassData.chanceToIncreseDefense = EditorGUILayout.IntSlider(customclassData.chanceToIncreseDefense, 0, 100);
         GUILayout.Space(50);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("SPD%", GUILayout.Width(40));
         GUILayout.FlexibleSpace();
-        customclassData.chanceToIncreaseSpeed = EditorGUILayout.IntField(customclassData.chanceToIncreaseSpeed);
+        customclassData.chanceToIncreaseSpeed = EditorGUILayout.IntSlider(customclassData.chanceToIncreaseSpeed, 0, 100);
         GUILayout.Space(50);
         EditorGUILayout.EndHorizontal();
 
@@ -224,16 +224,26 @@ public class CustomClassLevelUpWindow : EditorWindow
     {
         GUILayout.BeginArea(bottomSection);
 
-        if (customclassData.className == null)
+        if (customclassData.className == null || customclassData.className.Length <1)
         {
-            EditorGUILayout.HelpBox("This enemy needs a [Name] before it can be created.", MessageType.Warning);
+            EditorGUILayout.HelpBox("This type of class needs a [Name] before it can be created.", MessageType.Warning);
         }
-        //TODO add more else if functions that check if the inputs are null
-        //TODO add an else if function that checks if className == an existing Data name
-        //else if (/*Find CustomClassData file's name*/ = customclassData.className)
-        //{
-        //    EditorGUILayout.HelpBox("This [Name] already exists.", MessageType.Warning);
-        //}
+        else if (customclassData.healthStat <= 0)
+        {
+            EditorGUILayout.HelpBox("This type of class needs a [Health] greater than 0 before it can be created.", MessageType.Warning);
+        }
+        else if (customclassData.attackStat <= 0)
+        {
+            EditorGUILayout.HelpBox("This type of class needs an [Attack] greater than 0 before it can be created.", MessageType.Warning);
+        }
+        else if (customclassData.defenseStat <= 0)
+        {
+            EditorGUILayout.HelpBox("This type of class needs a [Defense] greater than 0 before it can be created.", MessageType.Warning);
+        }
+        else if (customclassData.speedStat <= 0)
+        {
+            EditorGUILayout.HelpBox("This type of class needs a [Speed] greater than 0 before it can be created.", MessageType.Warning);
+        }
         else if (GUILayout.Button("Create!", GUILayout.Height(40)))
         {
             //save class data?
@@ -259,7 +269,7 @@ public class CustomClassLevelUpWindow : EditorWindow
         AssetDatabase.Refresh();
     }
 }
-
+//currently alters data file as well
 public class TestLevelUpSystem : EditorWindow
 {
     static TestLevelUpSystem window;
@@ -274,9 +284,21 @@ public class TestLevelUpSystem : EditorWindow
 
     private void OnGUI()
     {
+        DrawDataField();
         DrawClassLevel((CustomClassData)CustomClassLevelUpWindow.customclassInfo);
         DrawClassStats((CustomClassData)CustomClassLevelUpWindow.customclassInfo);
-        DrawLevelUpButton();
+        DrawLevelUpButton((CustomClassData)CustomClassLevelUpWindow.customclassInfo);
+    }
+
+    void DrawDataField()
+    {
+        GUILayout.BeginHorizontal();
+
+        GUILayout.Space(8);
+        GUILayout.Label("Temporary space for Data file");
+
+        GUILayout.EndHorizontal();
+
     }
 
     void DrawClassName(CustomClassData classData)
@@ -308,7 +330,7 @@ public class TestLevelUpSystem : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("HP", GUILayout.Width(30));
-        GUILayout.FlexibleSpace();
+        GUILayout.FlexibleSpace();    
         classData.healthStat = EditorGUILayout.IntField(classData.healthStat);
         GUILayout.Space(60);
         EditorGUILayout.EndHorizontal();
@@ -335,14 +357,44 @@ public class TestLevelUpSystem : EditorWindow
         EditorGUILayout.EndHorizontal();       
     }
     
-    void DrawLevelUpButton()
+    void DrawLevelUpButton(CustomClassData classData)
     {
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Level Up!", GUILayout.Height(40)))
         {
-            //Increase level then stats based on their percentages 
+            //Increase level by 1
+            classData.level += 1;
+
+            //Increase stats by 1.
+            classData.healthStat += 1;
+            classData.attackStat += 1;
+            classData.defenseStat += 1;
+            classData.speedStat += 1;
+
+            //Increase stats by 1 again based on percentages
+            classData.healthStat = IncreaseStatBasedOnPercentage(classData.healthStat, classData.chanceToIncreaseHealth);
+            classData.attackStat = IncreaseStatBasedOnPercentage(classData.attackStat, classData.chanceToIncreaseAttack);
+            classData.defenseStat = IncreaseStatBasedOnPercentage(classData.defenseStat, classData.chanceToIncreseDefense);
+            classData.speedStat = IncreaseStatBasedOnPercentage(classData.speedStat, classData.chanceToIncreaseSpeed);
+
         }
 
         GUILayout.EndHorizontal();
+    }
+
+    int IncreaseStatBasedOnPercentage(int stat, int percentage)
+    {
+        int rngNumber;
+        rngNumber = Random.Range(0, 101);
+        Debug.Log(percentage + "% that stat will increase by 1 again.");
+        Debug.Log("Number chosen for rngNumber: " + rngNumber);
+        Debug.Log(percentage);
+        if (rngNumber < percentage)
+        {
+            stat += 1;
+            Debug.Log("Stat has  increased again! " + stat);
+        }
+        int newStat = stat;
+        return newStat;
     }
 }
