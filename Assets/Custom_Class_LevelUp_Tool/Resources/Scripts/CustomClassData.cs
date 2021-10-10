@@ -9,7 +9,7 @@ public class CustomClassData : ScriptableObject
     public string className;
     public int level = 1;
 
-    [Header("Base Stats of Class")]
+    [Header("Stats of Class")]
     public int healthStat;
     public int attackStat;
     public int defenseStat;
@@ -21,4 +21,10 @@ public class CustomClassData : ScriptableObject
     public int chanceToIncreseDefense;
     public int chanceToIncreaseSpeed;
 
+    [Header("Base Stats of Class at Level 1")]
+    public int originallevel = 1;
+    public int originalhealth;
+    public int originalattack;
+    public int originaldefense;
+    public int originalspeed;
 }

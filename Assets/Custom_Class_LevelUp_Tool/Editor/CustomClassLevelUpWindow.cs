@@ -155,28 +155,32 @@ public class CustomClassLevelUpWindow : EditorWindow
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("HP", GUILayout.Width(30));
         GUILayout.FlexibleSpace();
-        customclassData.healthStat = EditorGUILayout.IntField(customclassData.healthStat);
+        customclassData.originalhealth = EditorGUILayout.IntField(customclassData.originalhealth);
+        customclassData.healthStat = customclassData.originalhealth;
         GUILayout.Space(60);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("ATK", GUILayout.Width(30));
         GUILayout.FlexibleSpace();
-        customclassData.attackStat = EditorGUILayout.IntField(customclassData.attackStat);
+        customclassData.originalattack = EditorGUILayout.IntField(customclassData.originalattack);
+        customclassData.attackStat = customclassData.originalattack;
         GUILayout.Space(60);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("DEF", GUILayout.Width(30));
         GUILayout.FlexibleSpace();
-        customclassData.defenseStat = EditorGUILayout.IntField(customclassData.defenseStat);
+        customclassData.originaldefense = EditorGUILayout.IntField(customclassData.originaldefense);
+        customclassData.defenseStat = customclassData.originaldefense;
         GUILayout.Space(60);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("SPD", GUILayout.Width(30));
         GUILayout.FlexibleSpace();
-        customclassData.speedStat = EditorGUILayout.IntField(customclassData.speedStat);
+        customclassData.originalspeed = EditorGUILayout.IntField(customclassData.originalspeed);
+        customclassData.speedStat = customclassData.originalspeed;
         GUILayout.Space(60);
         EditorGUILayout.EndHorizontal();
 
@@ -301,19 +305,6 @@ public class TestLevelUpSystem : EditorWindow
         window.Close();
     }
 
-    private void StoreDataOnce()
-    {
-        if (x == 0)
-        {
-            originalLevel = _classData.level;
-            originalHealth = _classData.healthStat;
-            originalAttack = _classData.attackStat;
-            originalDefense = _classData.defenseStat;
-            originalSpeed = _classData.speedStat;
-        }
-        x += 1;
-    }
-
     private void OnGUI()
     {
         DrawDataField();
@@ -323,7 +314,6 @@ public class TestLevelUpSystem : EditorWindow
         }
         else
         {
-            StoreDataOnce();
             DrawClassLevel(_classData);
             DrawClassStats(_classData);
             DrawLevelUpButton(_classData);
@@ -340,10 +330,6 @@ public class TestLevelUpSystem : EditorWindow
         GUILayout.Space(8);
         GUILayout.Label("Temporary space for Data file");
         _classData = (CustomClassData)EditorGUILayout.ObjectField(_classData, typeof(CustomClassData), false);
-        if (_classData != null)
-        {
-            StoreDataOnce();
-        }
 
         GUILayout.EndHorizontal();
 
@@ -438,13 +424,12 @@ public class TestLevelUpSystem : EditorWindow
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Restore Class to Original Level and Stats!", GUILayout.Height(40)))
         {
-            classData.level = originalLevel;
-            classData.healthStat = originalHealth;
-            classData.attackStat = originalAttack;
-            classData.defenseStat = originalDefense;
-            classData.speedStat = originalSpeed;
+            classData.level = classData.originallevel;
+            classData.healthStat = classData.originalhealth;
+            classData.attackStat = classData.originalattack;
+            classData.defenseStat = classData.originaldefense;
+            classData.speedStat = classData.originalspeed;
             Debug.Log("Return stats to original stats.");
-            x = 0;
         }
         GUILayout.EndHorizontal();
     }
