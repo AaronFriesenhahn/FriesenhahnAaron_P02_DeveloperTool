@@ -249,6 +249,7 @@ public class CustomClassLevelUpWindow : EditorWindow
             //save class data?
             SaveClassData();
             //once saved, open window with data to test level up system
+            TestLevelUpSystem.CloseWindow();
             TestLevelUpSystem.OpenWindow();
             CloseWindow();
             OpenWindow();            
@@ -274,6 +275,18 @@ public class TestLevelUpSystem : EditorWindow
 {
     static TestLevelUpSystem window;
 
+    [SerializeField]
+    CustomClassData _classData;
+
+    int originalLevel;
+    int originalHealth;
+    int originalAttack;
+    int originalDefense;
+    int originalSpeed;
+
+    //testing storing data once
+    int x = 0;
+
     public static void OpenWindow()
     {
         TestLevelUpSystem window = (TestLevelUpSystem)GetWindow(typeof(TestLevelUpSystem));
@@ -282,12 +295,42 @@ public class TestLevelUpSystem : EditorWindow
         window.Show();
     }
 
+    public static void CloseWindow()
+    {
+        TestLevelUpSystem window = (TestLevelUpSystem)GetWindow(typeof(TestLevelUpSystem));
+        window.Close();
+    }
+
+    private void StoreDataOnce()
+    {
+        if (x == 0)
+        {
+            originalLevel = _classData.level;
+            originalHealth = _classData.healthStat;
+            originalAttack = _classData.attackStat;
+            originalDefense = _classData.defenseStat;
+            originalSpeed = _classData.speedStat;
+        }
+        x += 1;
+    }
+
     private void OnGUI()
     {
         DrawDataField();
-        DrawClassLevel((CustomClassData)CustomClassLevelUpWindow.customclassInfo);
-        DrawClassStats((CustomClassData)CustomClassLevelUpWindow.customclassInfo);
-        DrawLevelUpButton((CustomClassData)CustomClassLevelUpWindow.customclassInfo);
+        if (_classData == null)
+        {
+            DrawWarning();
+        }
+        else
+        {
+            StoreDataOnce();
+            DrawClassLevel(_classData);
+            DrawClassStats(_classData);
+            DrawLevelUpButton(_classData);
+
+            Debug.Log("Original Level: " + originalLevel + ". Original Health: " + originalHealth
+                + ". Original Attack: " + originalAttack + ". Original Defense: " + originalDefense + ". Original Speed: " + originalSpeed);
+        }
     }
 
     void DrawDataField()
@@ -296,9 +339,21 @@ public class TestLevelUpSystem : EditorWindow
 
         GUILayout.Space(8);
         GUILayout.Label("Temporary space for Data file");
+        _classData = (CustomClassData)EditorGUILayout.ObjectField(_classData, typeof(CustomClassData), false);
+        if (_classData != null)
+        {
+            StoreDataOnce();
+        }
 
         GUILayout.EndHorizontal();
 
+    }
+
+    void DrawWarning()
+    {
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.HelpBox("To test a class' level up system, a class [Data] must be put in first.", MessageType.Warning);
+        GUILayout.EndHorizontal();
     }
 
     void DrawClassName(CustomClassData classData)
@@ -378,7 +433,19 @@ public class TestLevelUpSystem : EditorWindow
             classData.speedStat = IncreaseStatBasedOnPercentage(classData.speedStat, classData.chanceToIncreaseSpeed);
 
         }
+        GUILayout.EndHorizontal();
 
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Restore Class to Original Level and Stats!", GUILayout.Height(40)))
+        {
+            classData.level = originalLevel;
+            classData.healthStat = originalHealth;
+            classData.attackStat = originalAttack;
+            classData.defenseStat = originalDefense;
+            classData.speedStat = originalSpeed;
+            Debug.Log("Return stats to original stats.");
+            x = 0;
+        }
         GUILayout.EndHorizontal();
     }
 
