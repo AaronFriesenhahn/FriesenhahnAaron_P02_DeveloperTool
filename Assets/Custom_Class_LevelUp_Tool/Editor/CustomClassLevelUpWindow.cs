@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 public class CustomClassLevelUpWindow : EditorWindow
 {
@@ -191,7 +192,7 @@ public class CustomClassLevelUpWindow : EditorWindow
     {
         GUILayout.BeginArea(customClassStatIncreaseSection);
 
-        GUILayout.Label(" % Chance to Increase Stat", skin.GetStyle("StatsStyle"));
+        GUILayout.Label(" % Chance to Increase Stat by 1 Again", skin.GetStyle("StatsStyle"));
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("HP% ", GUILayout.Width(40));
@@ -247,6 +248,10 @@ public class CustomClassLevelUpWindow : EditorWindow
         else if (customclassData.speedStat <= 0)
         {
             EditorGUILayout.HelpBox("This type of class needs a [Speed] greater than 0 before it can be created.", MessageType.Warning);
+        }
+        else if (File.Exists("Assets/Custom_Class_LevelUp_Tool/Resources/classesData/" + customclassData.className + ".asset"))
+        {
+            EditorGUILayout.HelpBox("This type of class already exists.", MessageType.Warning);
         }
         else if (GUILayout.Button("Create!", GUILayout.Height(40)))
         {
@@ -328,7 +333,7 @@ public class TestLevelUpSystem : EditorWindow
         GUILayout.BeginHorizontal();
 
         GUILayout.Space(8);
-        GUILayout.Label("Temporary space for Data file");
+        GUILayout.Label("Class to Test: ");
         _classData = (CustomClassData)EditorGUILayout.ObjectField(_classData, typeof(CustomClassData), false);
 
         GUILayout.EndHorizontal();
